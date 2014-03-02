@@ -20,11 +20,14 @@
                android:layout_width="fill_parent"
                android:layout_height="fill_parent"/>
 
+  <!-- 自定义的扫描框 -->
   <com.google.zxing.client.android.ViewfinderView
       android:id="@+id/viewfinder_view"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"/>
 
+  
+  <!-- 这是扫描后的结果 -->
   <LinearLayout android:id="@+id/result_view"
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
@@ -46,7 +49,7 @@
           android:layout_width="wrap_content"
           android:layout_height="fill_parent"
           android:gravity="right|center_vertical">
-
+   <!-- 结果图片 -->  
         <ImageView android:id="@+id/barcode_image_view"
                    android:layout_width="160dip"
                    android:layout_height="wrap_content"
@@ -56,6 +59,7 @@
                    android:adjustViewBounds="true"
                    android:scaleType="centerInside"/>
 
+          <!-- 结果格式 -->  
         <LinearLayout
           android:orientation="horizontal"
           android:layout_width="wrap_content"
@@ -75,6 +79,7 @@
 
         </LinearLayout>
 
+          <!-- 结果类型-->  
         <LinearLayout
           android:orientation="horizontal"
           android:layout_width="wrap_content"
@@ -93,7 +98,7 @@
                     android:textColor="@color/result_minor_text"/>
 
         </LinearLayout>
-
+  <!-- 结果时间-->  
         <LinearLayout
           android:orientation="horizontal"
           android:layout_width="wrap_content"
@@ -113,6 +118,8 @@
 
         </LinearLayout>
 
+          <!-- 结果元数据 -->  
+        
         <LinearLayout
           android:orientation="horizontal"
           android:layout_width="wrap_content"
@@ -135,7 +142,10 @@
 
       </LinearLayout>
 
+      
+      
       <ScrollView
+          
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
 
@@ -143,21 +153,23 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:orientation="vertical">
-
+     <!-- 右边的链接-->  
           <TextView android:id="@+id/contents_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/result_text"
-                    android:textColorLink="@color/result_text"
+                    android:textColor="#00ff00"
+                    android:textColorLink="#00ff00"
                     android:textSize="22sp"
                     android:paddingLeft="12dip"
                     android:autoLink="web"/>
 
+          
+          
           <TextView android:id="@+id/contents_supplement_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/result_text"
-                    android:textColorLink="@color/result_text"
+                    android:textColor="#ff0000"
+                    android:textColorLink="#ff0000"
                     android:paddingLeft="12dip"
                     android:autoLink="web"/>
 
@@ -166,7 +178,7 @@
       </ScrollView>
 
     </LinearLayout>
-
+<!-- 
     <LinearLayout android:id="@+id/result_button_view"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
@@ -186,9 +198,9 @@
               android:visibility="gone"/>
 
     </LinearLayout>
-
+ -->
   </LinearLayout>
-
+<!-- 
   <TextView android:id="@+id/status_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -196,5 +208,5 @@
             android:background="@color/transparent"
             android:text="@string/msg_default_status"
             android:textColor="@color/status_text"/>
-
+ -->
 </merge>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <SurfaceView android:id="@+id/test_preview"
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"/>
+
+  <!-- 自定义的扫描框 -->
+  <com.google.zxing.client.android.ViewfinderView
+      android:id="@+id/test_viewfinder"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"/>
+  
+  </merge>
