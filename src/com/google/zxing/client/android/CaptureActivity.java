@@ -6,15 +6,9 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;
-import com.google.zxing.client.android.clipboard.ClipboardInterface;
-import com.google.zxing.client.android.history.HistoryActivity;
-import com.google.zxing.client.android.history.HistoryItem;
-import com.google.zxing.client.android.history.HistoryManager;
-import com.google.zxing.client.android.result.ResultButtonListener;
 import com.google.zxing.client.android.result.ResultHandler;
 import com.google.zxing.client.android.result.ResultHandlerFactory;
-import com.google.zxing.client.android.result.supplement.SupplementalInfoRetriever;
-import com.google.zxing.client.android.share.ShareActivity;
+ 
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -82,26 +76,10 @@ public final class CaptureActivity extends Activity implements
 	private boolean copyToClipboard;
 	private IntentSource source;
 	private String sourceUrl;
-	private ScanFromWebPageManager scanFromWebPageManager;
+
 	private Collection<BarcodeFormat> decodeFormats;
 	private Map<DecodeHintType, ?> decodeHints;
 	private String characterSet;
-	private HistoryManager historyManager;
-	private InactivityTimer inactivityTimer;
-	private BeepManager beepManager;
-	private AmbientLightManager ambientLightManager;
-
-	ViewfinderView getViewfinderView() {
-		return viewfinderView;
-	}
-
-	public Handler getHandler() {
-		return handler;
-	}
-
-	CameraManager getCameraManager() {
-		return cameraManager;
-	}
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -114,14 +92,13 @@ public final class CaptureActivity extends Activity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
- 
+
 		cameraManager = new CameraManager(getApplication());
 
-		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-		viewfinderView.setCameraManager(cameraManager);
+	 	viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+	 	viewfinderView.setCameraManager(cameraManager);
 
 		resultView = findViewById(R.id.result_view);
-		// statusView = (TextView) findViewById(R.id.status_view);
 
 		handler = null;
 		lastResult = null;
@@ -131,13 +108,13 @@ public final class CaptureActivity extends Activity implements
 		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
 		SurfaceHolder surfaceHolder = surfaceView.getHolder();
 		if (hasSurface) {
-	 
+
 			initCamera(surfaceHolder);
 		} else {
-			 
+
 			surfaceHolder.addCallback(this);
 		}
-
+		source = IntentSource.NONE;
 	}
 
 	@Override
@@ -146,8 +123,8 @@ public final class CaptureActivity extends Activity implements
 			handler.quitSynchronously();
 			handler = null;
 		}
-		inactivityTimer.onPause();
-		ambientLightManager.stop();
+		// inactivityTimer.onPause();
+		// ambientLightManager.stop();
 		cameraManager.closeDriver();
 		if (!hasSurface) {
 			SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
@@ -159,12 +136,24 @@ public final class CaptureActivity extends Activity implements
 
 	@Override
 	protected void onDestroy() {
-		inactivityTimer.shutdown();
+		// inactivityTimer.shutdown();
 		super.onDestroy();
 	}
 
+	public ViewfinderView getViewfinderView() {
+		return viewfinderView;
+	}
+
+	public Handler getHandler() {
+		return handler;
+	}
+
+	public CameraManager getCameraManager() {
+		return cameraManager;
+	}
+
 	private void decodeOrStoreSavedBitmap(Bitmap bitmap, Result result) {
-	 
+
 		if (handler == null) {
 			savedResultToShow = result;
 		} else {
@@ -203,36 +192,129 @@ public final class CaptureActivity extends Activity implements
 
 	}
 
- 
 	public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-		//inactivityTimer.onActivity();
+		// inactivityTimer.onActivity();
 		lastResult = rawResult;
-		 ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
+		ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(
+				this, rawResult);
 		Toast.makeText(this, "999999999", 0).show();
- 	    switch (source) {
-//      case NATIVE_APP_INTENT:
-//      case PRODUCT_SEARCH_LINK:
-//        handleDecodeExternally(rawResult, resultHandler, barcode);
-//        break;
-//      case ZXING_LINK:
-//        if (scanFromWebPageManager == null || !scanFromWebPageManager.isScanFromWebPage()) {
-//          handleDecodeInternally(rawResult, resultHandler, barcode);
-//        } else {
-//          handleDecodeExternally(rawResult, resultHandler, barcode);
-//        }
-//        break;
-      case NONE:
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (fromLiveScan && prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
-          Toast.makeText(getApplicationContext(),
-                         getResources().getString(R.string.msg_bulk_mode_scanned) + " (" + rawResult.getText() + ')',
-                         Toast.LENGTH_SHORT).show();
-          // Wait a moment or else it will scan the same barcode continuously about 3 times
-          restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
-        } else {
-          handleDecodeInternally(rawResult, resultHandler, barcode);
-        }
-        break;
+		boolean fromLiveScan = barcode != null;
+		switch (source) {
+		case NONE:
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			if (fromLiveScan
+					&& prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE,
+							false)) {
+				// Toast.makeText(getApplicationContext(),
+				// getResources().getString(R.string.msg_bulk_mode_scanned) +
+				// " (" + rawResult.getText() + ')',
+				// Toast.LENGTH_SHORT).show();
+				// // Wait a moment or else it will scan the same barcode
+				// continuously about 3 times
+				restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
+			} else {
+				handleDecodeInternally(rawResult, resultHandler, barcode);
+			}
+			break;
+
+		default:
+			Log.e("qr", "ÆäËûµÄ¡£¡£¡£¡£");
+			break;
+		}
+
+	}
+
+	private void handleDecodeInternally(Result rawResult,
+			ResultHandler resultHandler, Bitmap barcode) {
+		// // statusView.setVisibility(View.GONE);
+		viewfinderView.setVisibility(View.GONE);
+		resultView.setVisibility(View.VISIBLE);
+		//
+		// ImageView barcodeImageView = (ImageView)
+		// findViewById(R.id.barcode_image_view);
+		// if (barcode == null) {
+		// barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+		// R.drawable.launcher_icon));
+		// } else {
+		// barcodeImageView.setImageBitmap(barcode);
+		// }
+		//
+		// TextView formatTextView = (TextView)
+		// findViewById(R.id.format_text_view);
+		// formatTextView.setText(rawResult.getBarcodeFormat().toString());
+		//
+		// TextView typeTextView = (TextView) findViewById(R.id.type_text_view);
+		// typeTextView.setText(resultHandler.getType().toString());
+		//
+		// DateFormat formatter =
+		// DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+		// TextView timeTextView = (TextView) findViewById(R.id.time_text_view);
+		// timeTextView.setText(formatter.format(new
+		// Date(rawResult.getTimestamp())));
+		//
+		//
+		// TextView metaTextView = (TextView) findViewById(R.id.meta_text_view);
+		// View metaTextViewLabel = findViewById(R.id.meta_text_view_label);
+		// metaTextView.setVisibility(View.GONE);
+		// metaTextViewLabel.setVisibility(View.GONE);
+		// Map<ResultMetadataType,Object> metadata =
+		// rawResult.getResultMetadata();
+		// if (metadata != null) {
+		// StringBuilder metadataText = new StringBuilder(20);
+		// for (Map.Entry<ResultMetadataType,Object> entry :
+		// metadata.entrySet()) {
+		// if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
+		// metadataText.append(entry.getValue()).append('\n');
+		// }
+		// }
+		// if (metadataText.length() > 0) {
+		// metadataText.setLength(metadataText.length() - 1);
+		// metaTextView.setText(metadataText);
+		// metaTextView.setVisibility(View.VISIBLE);
+		// metaTextViewLabel.setVisibility(View.VISIBLE);
+		// }
+		// }
+		//
+		// TextView contentsTextView = (TextView)
+		// findViewById(R.id.contents_text_view);
+		// CharSequence displayContents = resultHandler.getDisplayContents();
+		// contentsTextView.setText(displayContents);
+		// // Crudely scale betweeen 22 and 32 -- bigger font for shorter text
+		// int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
+		// contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
+		//
+		// TextView supplementTextView = (TextView)
+		// findViewById(R.id.contents_supplement_text_view);
+		// supplementTextView.setText("");
+		// supplementTextView.setOnClickListener(null);
+		// if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+		// PreferencesActivity.KEY_SUPPLEMENTAL, true)) {
+		// SupplementalInfoRetriever.maybeInvokeRetrieval(supplementTextView,
+		// resultHandler.getResult(),
+		// historyManager,
+		// this);
+		// }
+		//
+		// int buttonCount = resultHandler.getButtonCount();
+		// // ViewGroup buttonView = (ViewGroup)
+		// findViewById(R.id.result_button_view);
+		// // buttonView.requestFocus();
+		// for (int x = 0; x < ResultHandler.MAX_BUTTON_COUNT; x++) {
+		// // TextView button = (TextView) buttonView.getChildAt(x);
+		// if (x < buttonCount) {
+		// /// button.setVisibility(View.VISIBLE);
+		// // button.setText(resultHandler.getButtonText(x));
+		// // button.setOnClickListener(new ResultButtonListener(resultHandler,
+		// x));
+		// } else {
+		// // button.setVisibility(View.GONE);
+		// }
+		// }
+		//
+		// if (copyToClipboard && !resultHandler.areContentsSecure()) {
+		// ClipboardInterface.setText(displayContents, this);
+		// }
 	}
 
 	private void initCamera(SurfaceHolder surfaceHolder) {
@@ -246,7 +328,7 @@ public final class CaptureActivity extends Activity implements
 		}
 		try {
 			cameraManager.openDriver(surfaceHolder);
-	 
+
 			if (handler == null) {
 				handler = new CaptureActivityHandler(this, decodeFormats,
 						decodeHints, characterSet, cameraManager);
