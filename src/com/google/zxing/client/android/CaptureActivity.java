@@ -8,7 +8,6 @@ import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.result.ResultHandler;
 import com.google.zxing.client.android.result.ResultHandlerFactory;
- 
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -51,19 +50,9 @@ public final class CaptureActivity extends Activity implements
 
 	private static final String TAG = CaptureActivity.class.getSimpleName();
 
-	private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1500L;
 	private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
 
-	private static final String[] ZXING_URLS = {
-			"http://zxing.appspot.com/scan", "zxing://scan/" };
-
 	public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
-
-	private static final Collection<ResultMetadataType> DISPLAYABLE_METADATA_TYPES = EnumSet
-			.of(ResultMetadataType.ISSUE_NUMBER,
-					ResultMetadataType.SUGGESTED_PRICE,
-					ResultMetadataType.ERROR_CORRECTION_LEVEL,
-					ResultMetadataType.POSSIBLE_COUNTRY);
 
 	private CameraManager cameraManager;
 	private CaptureActivityHandler handler;
@@ -73,9 +62,8 @@ public final class CaptureActivity extends Activity implements
 	private View resultView;
 	private Result lastResult;
 	private boolean hasSurface;
-	private boolean copyToClipboard;
+
 	private IntentSource source;
-	private String sourceUrl;
 
 	private Collection<BarcodeFormat> decodeFormats;
 	private Map<DecodeHintType, ?> decodeHints;
@@ -95,8 +83,8 @@ public final class CaptureActivity extends Activity implements
 
 		cameraManager = new CameraManager(getApplication());
 
-	 	viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-	 	viewfinderView.setCameraManager(cameraManager);
+		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+		viewfinderView.setCameraManager(cameraManager);
 
 		resultView = findViewById(R.id.result_view);
 

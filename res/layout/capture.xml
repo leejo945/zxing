@@ -21,7 +21,7 @@
                android:layout_height="fill_parent"/>
 
   <!-- 自定义的扫描框 -->
-  <com.google.zxing.client.android1.ViewfinderView
+  <com.google.zxing.client.android.ViewfinderView
       android:id="@+id/viewfinder_view"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"/>
@@ -178,7 +178,7 @@
       </ScrollView>
 
     </LinearLayout>
-<!-- 
+ 
     <LinearLayout android:id="@+id/result_button_view"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
@@ -198,9 +198,9 @@
               android:visibility="gone"/>
 
     </LinearLayout>
- -->
+ 
   </LinearLayout>
-<!-- 
+ 
   <TextView android:id="@+id/status_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -208,5 +208,5 @@
             android:background="@color/transparent"
             android:text="@string/msg_default_status"
             android:textColor="@color/status_text"/>
- -->
+ 
 </merge>
