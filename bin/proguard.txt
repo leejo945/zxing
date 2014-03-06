@@ -7,6 +7,7 @@
 # view AndroidManifest.xml #generated:102
 -keep class com.google.zxing.client.android.PreferencesActivity { <init>(...); }
 
+# view res/layout/capture.xml #generated:24
 # view res/layout/test.xml #generated:9
 -keep class com.google.zxing.client.android.ViewfinderView { <init>(...); }
 
@@ -30,7 +31,4 @@
 
 # view AndroidManifest.xml #generated:135
 -keep class com.google.zxing.client.android.share.ShareActivity { <init>(...); }
-
-# view res/layout/capture.xml #generated:24
--keep class com.google.zxing.client.android1.ViewfinderView { <init>(...); }
 
