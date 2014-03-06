@@ -19,6 +19,7 @@
   <style name="CaptureTheme" parent="@android:style/Theme.Black">
     <item name="android:windowFullscreen">true</item>
     <item name="android:windowContentOverlay">@null</item>
+     <item name="android:windowNoTitle">true</item>
   <!--   <item name="android:windowActionBarOverlay">true</item>
     <item name="android:windowActionModeOverlay">true</item>--> 
   </style>
